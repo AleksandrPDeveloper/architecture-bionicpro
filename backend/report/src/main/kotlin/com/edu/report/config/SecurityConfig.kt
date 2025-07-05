@@ -5,12 +5,16 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.oauth2.jwt.JwtDecoder
+import org.springframework.security.oauth2.jwt.JwtTimestampValidator
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import org.springframework.web.filter.CorsFilter
+
 
 @Configuration
 class SecurityConfig {
@@ -58,5 +62,18 @@ class SecurityConfig {
             } as Collection<GrantedAuthority>
         }
         return converter
+    }
+
+    @Bean
+    fun jwtDecoder(): JwtDecoder {
+        val jwtDecoder = NimbusJwtDecoder
+            .withJwkSetUri("http://keycloak:8080/realms/reports-realm/protocol/openid-connect/certs")
+            .build()
+
+
+        // Оставляем ТОЛЬКО проверку времени действия токена (без проверки issuer)
+        jwtDecoder.setJwtValidator(JwtTimestampValidator())
+
+        return jwtDecoder
     }
 }
