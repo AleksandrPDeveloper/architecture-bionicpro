@@ -1,2 +1,6 @@
 /postgres-keycloak-data
+/backend/report/.gradle
+/backend/report/build
+/.idea
+report.iml
 2024__yandex-architecture-sso.code-workspace
